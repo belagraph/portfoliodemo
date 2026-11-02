@@ -1,1 +1,33 @@
+backend:
+  name: github
+  repo: belagraph/portfoliodemo
+  branch: main
+  base_url: https://portfoliodemo-blond-gamma.vercel.app
+  auth_endpoint: api/auth
 
+media_folder: images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: site
+    label: Portfolio
+    files:
+      - name: content
+        label: Site content
+        file: content/site.json
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Tagline, name: tagline, widget: text }
+          - { label: About (blank line = new paragraph), name: about, widget: text }
+          - { label: Email, name: email, widget: string }
+          - { label: Phone, name: phone, widget: string }
+          - label: Work sections
+            name: sections
+            widget: list
+            fields:
+              - { label: Title, name: title, widget: string }
+              - label: Images
+                name: images
+                widget: list
+                required: false
+                field: { label: Image, name: image, widget: image }
