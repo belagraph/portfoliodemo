@@ -32,6 +32,7 @@ p{max-width:560px;margin-bottom:14px}
 .info p{margin:0 0 14px}
 .btn{display:inline-block;margin:8px 8px 0 0;padding:10px 22px;border:2px solid #2d2d2d;border-radius:30px;text-decoration:none;font-weight:700;font-size:14px}
 .btn:hover{background:#e8702a;border-color:#e8702a;color:#fff}
+.box img{width:100%;height:100%;object-fit:cover}
 footer{padding:24px 0;font-size:13px;color:#7a716d}
 @media(max-width:700px){.grid,.info{grid-template-columns:1fr}.box.wide{aspect-ratio:4/3}header a{margin-left:12px}}
 </style>
@@ -48,16 +49,15 @@ footer{padding:24px 0;font-size:13px;color:#7a716d}
 <section>
   <div class="wrap">
     <p class="sub">Graphic Designer · Addis Ababa</p>
-    <h1>Abel Daniel</h1>
-    <p style="margin-top:20px">I work with brands to create logos, brand identities and visual systems, with a passion for Ethiopian cultural patterns and the Ethiopic typeface.</p>
+    <h1 id="name">Abel Daniel</h1>
+    <p id="tagline" style="margin-top:20px">I work with brands to create logos, brand identities and visual systems, with a passion for Ethiopian cultural patterns and the Ethiopic typeface.</p>
   </div>
 </section>
 
 <section id="about">
   <div class="wrap">
     <h2>About</h2>
-    <p>My name is Abel Daniel, and I am a graphic designer. For over five years, I've been diving deep into the world of graphic design. I specialize in working with brands to create logos, brand identities, and visual branding.</p>
-    <p>Whether I'm collaborating with a team or working on my own, I always aim to blend consistency with a burst of creativity. I have developed many professional Ethiopic fonts.</p>
+    <div id="about-text"></div>
     <div class="info" style="margin-top:28px">
       <div>
         <h3>EDUCATION</h3>
@@ -78,37 +78,7 @@ footer{padding:24px 0;font-size:13px;color:#7a716d}
 <section id="work">
   <div class="wrap">
     <h2>Work</h2>
-
-    <h3 class="sub">01 Logofolio</h3>
-    <div class="grid">
-      <div class="box">Image</div><div class="box">Image</div><div class="box">Image</div>
-    </div>
-
-    <h3 class="sub" style="margin-top:40px">02 Visual Identity</h3>
-    <div class="grid"><div class="box wide">Image</div></div>
-
-    <h3 class="sub" style="margin-top:40px">03 Ethiopic Fonts</h3>
-    <div class="grid">
-      <div class="box">Image</div><div class="box">Image</div><div class="box">Image</div>
-    </div>
-
-    <h3 class="sub" style="margin-top:40px">04 Book Covers</h3>
-    <div class="grid">
-      <div class="box">Image</div><div class="box">Image</div><div class="box">Image</div>
-    </div>
-
-    <h3 class="sub" style="margin-top:40px">05 Social Media</h3>
-    <div class="grid">
-      <div class="box">Image</div><div class="box">Image</div><div class="box">Image</div>
-    </div>
-
-    <h3 class="sub" style="margin-top:40px">06 Posters</h3>
-    <div class="grid">
-      <div class="box">Image</div><div class="box">Image</div><div class="box">Image</div>
-    </div>
-
-    <h3 class="sub" style="margin-top:40px">07 Patterns</h3>
-    <div class="grid"><div class="box wide">Image</div></div>
+    <div id="work-list"></div>
   </div>
 </section>
 
@@ -116,12 +86,34 @@ footer{padding:24px 0;font-size:13px;color:#7a716d}
   <div class="wrap">
     <h2>Contact</h2>
     <p>Open to brand, logo and typeface projects.</p>
-    <a class="btn" href="mailto:abel30dan@gmail.com">abel30dan@gmail.com</a>
-    <a class="btn" href="tel:+251939064013">+251 939 064 013</a>
+    <a class="btn" id="email" href="mailto:abel30dan@gmail.com">abel30dan@gmail.com</a>
+    <a class="btn" id="phone" href="tel:+251939064013">+251 939 064 013</a>
   </div>
 </section>
 
 <footer><div class="wrap">© Abel Daniel</div></footer>
 
+<script>
+fetch('content/site.json').then(r=>r.json()).then(d=>{
+  const $=id=>document.getElementById(id);
+  $('name').textContent=d.name; document.title=d.name+' — Graphic Designer';
+  $('tagline').textContent=d.tagline;
+  $('about-text').innerHTML='';
+  d.about.split(/\n\s*\n/).forEach(t=>{const p=document.createElement('p');p.textContent=t;$('about-text').appendChild(p)});
+  $('email').textContent=d.email; $('email').href='mailto:'+d.email;
+  $('phone').textContent=d.phone; $('phone').href='tel:'+d.phone.replace(/[^+\d]/g,'');
+  const list=$('work-list'); list.innerHTML='';
+  d.sections.forEach((sec,i)=>{
+    const h=document.createElement('h3'); h.className='sub'; h.style.marginTop=i?'40px':'0';
+    h.textContent=String(i+1).padStart(2,'0')+' '+sec.title; list.appendChild(h);
+    const g=document.createElement('div'); g.className='grid';
+    const imgs=sec.images&&sec.images.length?sec.images:[null,null,null];
+    imgs.forEach(src=>{const b=document.createElement('div'); b.className='box';
+      if(src){const im=document.createElement('img'); im.src=src; im.alt=sec.title; im.loading='lazy'; b.appendChild(im)} else b.textContent='Image';
+      g.appendChild(b)});
+    list.appendChild(g);
+  });
+}).catch(()=>{});
+</script>
 </body>
 </html>
